@@ -18,3 +18,23 @@ h1 {
     overflow: anchor-selection; /* Intenta mantener el foco 
   } 
 */
+
+.selection-marquee {
+  border: 1px solid #1a73e8;
+  background-color: rgba(26, 115, 232, .2);
+  position: absolute;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.gallery__item.selected {
+  outline: 4px solid #1a73e8;
+  outline-offset: -4px;
+  filter: brightness(.8);
+}
+
+.btn__delete {
+  display: none;
+  background-color: #d93025;
+  color: #fff;
+}

@@ -70,10 +70,16 @@ export async function initGallery() {
     return snap.exists() ? snap.data() : {};
   }
 
+  const updateDeleteBtnVisibility = () => {
+    deleteBtn.style.display = selectedImages.size > 0 ? "block" : "none";
+  }
+
   const renderGallery = async () => {
     const data = await getGallery();
     const images = data[currentSection] || [];
     gridGallery.innerHTML = "";
+
+    updateDeleteBtnVisibility();
 
     images.forEach(img => {
       const div = document.createElement("div");
@@ -88,6 +94,7 @@ export async function initGallery() {
         } else {
           selectedImages.add(img.public_id);
         }
+        updateDeleteBtnVisibility();
       });
       gridGallery.appendChild(div);
     });
@@ -96,19 +103,18 @@ export async function initGallery() {
   const deleteSelected = async (e) => {
     if (e) e.preventDefault();
     if (selectedImages.size === 0) return;
-
+    
     const data = await getGallery();
     const images = data[currentSection] || [];
     const ref = doc(db, "gallery", "main");
-
+    
     for (const pid of selectedImages) {
       try {
         const resCloud = await deleteFromCloudinary(pid);
         if (resCloud.result === "ok") {
           const imgToRemove = images.find(img => img.public_id === pid);
           if(imgToRemove) {
-            await updateDoc(ref, {[currentSection]: arrayRemove(imgToRemove)
-          });
+            await updateDoc(ref, {[currentSection]: arrayRemove(imgToRemove)});
         }
       }
     } catch (error) {
@@ -116,14 +122,21 @@ export async function initGallery() {
     }
   }
   selectedImages.clear();
+  updateDeleteBtnVisibility();
   renderGallery();
-  }
+}
 
   let filesToUpload = [];
 
   const handleFiles = (files) => {
-    const newFiles = Array.from(files);
-    filesToUpload = [...filesToUpload, ...newFiles];
+    const validFiles = Array.from(files).filter(file => {
+      const isImage = file.type.startsWith('image/');
+      const isSmallEnough = file.size < 5 * 1024 * 1024;;
+      if (!isImage) { alert(`${file.name}, no es una imagen válida.`); }
+      if (!isSmallEnough) { alert(`${file.name}, es demasiado pesado (máx 5MB).`); }
+      return isImage && isSmallEnough;
+    });
+    filesToUpload = [...filesToUpload, ...validFiles];
     renderPreview();
   }
 
