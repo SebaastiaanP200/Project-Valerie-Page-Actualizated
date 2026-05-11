@@ -20,17 +20,36 @@ h1 {
 */
 
 .selection-marquee {
-  border: 1px solid #1a73e8;
-  background-color: rgba(26, 115, 232, .2);
-  position: absolute;
-  z-index: 1000;
+  position: fixed;
+  border: 2px solid #1a73e8;
+  background-color: rgba(26, 115, 232, .25);
+  z-index: 10000;
   pointer-events: none;
+  border-radius: 2px;
+}
+
+.gallery__item {
+  transition: transform .2s ease;
+  position: relative;
+  cursor: pointer;
 }
 
 .gallery__item.selected {
   outline: 4px solid #1a73e8;
   outline-offset: -4px;
-  filter: brightness(.8);
+  filter: brightness(.95);
+}
+
+.gallery__item img {
+  user-select: none;
+  -webkit-user-drag: none;
+  display: block;
+  width: 30%;
+  height: auto;
+}
+
+.gallery__item.selected img {
+  filter: brightness(.7);
 }
 
 .btn__delete {
@@ -38,3 +57,4 @@ h1 {
   background-color: #d93025;
   color: #fff;
 }
+

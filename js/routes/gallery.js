@@ -84,21 +84,106 @@ export async function initGallery() {
     images.forEach(img => {
       const div = document.createElement("div");
       div.classList.add("gallery__item");
+      div.dataset.pid = img.public_id;
       div.innerHTML = `<img src="${img.url}" loading="lazy">`;
 
-      div.addEventListener("click", () => {
+      div.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const pid = div.dataset.pid;
+        
         div.classList.toggle("selected");
-
-        if (selectedImages.has(img.public_id)) {
-          selectedImages.delete(img.public_id);
+        if (selectedImages.has(pid)) {
+          div.classList.remove("selected");
+          selectedImages.delete(pid);
         } else {
-          selectedImages.add(img.public_id);
+          div.classList.add("selected");
+          selectedImages.add(pid);
         }
         updateDeleteBtnVisibility();
       });
       gridGallery.appendChild(div);
     });
   }
+  // --- LÓGICA DE SELECCIÓN POR ARRASTRE (MARQUEE) ---
+  let isSelecting = false;
+  let startX, startY;
+  let allItems = []; // Para no buscarlos 60 veces por segundo
+  const marquee = document.createElement("div");
+  marquee.classList.add("selection-marquee");
+
+  gridGallery.addEventListener("mousedown", (e) => {
+    // if (e.target !== gridGallery) return;
+    if (e.target.tagName === "IMG") e.preventDefault();
+
+    isSelecting = true;
+    selectedImages.clear();
+    document.querySelectorAll(".gallery__item").forEach(item => item.classList.remove("selected"));
+    
+    allItems = Array.from(document.querySelectorAll(".gallery__item"));
+    
+    // Usamos clientX/Y para que sea relativo a lo que ves, no a la página entera
+    startX = e.clientX;
+    startY = e.clientY;
+
+    marquee.style.left = `${startX}px`;
+    marquee.style.top = `${startY}px`;
+    marquee.style.width = "0px";
+    marquee.style.height = "0px";
+    document.body.appendChild(marquee);
+  });
+
+  window.addEventListener("mousemove", (e) => {
+    if (!isSelecting) return;
+
+    e.preventDefault();
+
+    // 1. Obtenemos los límites de la galería
+    const gridRect = gridGallery.getBoundingClientRect();
+
+    // 2. Limitamos el mouse para que la caja no salga de la galería
+    const currentX = Math.max(gridRect.left, Math.min(e.clientX, gridRect.right));
+    const currentY = Math.max(gridRect.top, Math.min(e.clientY, gridRect.bottom));
+
+    const width = Math.abs(currentX - startX);
+    const height = Math.abs(currentY - startY);
+
+    marquee.style.width = `${width}px`;
+    marquee.style.height = `${height}px`;
+    marquee.style.left = `${Math.min(currentX, startX)}px`;
+    marquee.style.top = `${Math.min(currentY, startY)}px`;
+
+    const marqueeRect = marquee.getBoundingClientRect();
+
+    allItems.forEach(item => {
+        const itemRect = item.getBoundingClientRect();
+        const pid = item.dataset.pid;
+
+        const isOverlapping = !(
+            marqueeRect.right < itemRect.left || 
+            marqueeRect.left > itemRect.right || 
+            marqueeRect.bottom < itemRect.top || 
+            marqueeRect.top > itemRect.bottom
+        );
+
+        if (isOverlapping) {
+            item.classList.add("selected");
+            selectedImages.add(pid);
+        } else {
+            // Solo deseleccionamos lo que NO estaba marcado antes del arrastre
+            // si querés que el arrastre siempre "sume", sacá este else.
+            item.classList.remove("selected");
+            selectedImages.delete(pid);
+        }
+    });
+    updateDeleteBtnVisibility();
+});
+
+
+  window.addEventListener("mouseup", () => {
+    if (!isSelecting) return;
+    isSelecting = false;
+    if (marquee.parentNode) marquee.parentNode.removeChild(marquee);
+  });
 
   const deleteSelected = async (e) => {
     if (e) e.preventDefault();
@@ -115,16 +200,16 @@ export async function initGallery() {
           const imgToRemove = images.find(img => img.public_id === pid);
           if(imgToRemove) {
             await updateDoc(ref, {[currentSection]: arrayRemove(imgToRemove)});
+          }
         }
+      } catch (error) {
+        console.error("Error al eliminar la imagen " + pid, error);      
       }
-    } catch (error) {
-      console.error("Error al eliminar la imagen " + pid, error);      
     }
+    selectedImages.clear();
+    updateDeleteBtnVisibility();
+    renderGallery();
   }
-  selectedImages.clear();
-  updateDeleteBtnVisibility();
-  renderGallery();
-}
 
   let filesToUpload = [];
 
@@ -188,7 +273,7 @@ export async function initGallery() {
       renderPreview();
     }
   });
-  
+
   dropzone.addEventListener("dragover", (e) => { e.preventDefault(); dropzone.style.borderColor = "#000"; });
   dropzone.addEventListener("dragleave", () => { dropzone.style.borderColor = "#ddd"; });
   dropzone.addEventListener("drop", (e) => { e.preventDefault(); dropzone.style.borderColor = "#ccc";
