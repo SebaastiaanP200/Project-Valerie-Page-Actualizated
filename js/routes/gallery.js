@@ -233,7 +233,7 @@ export async function initGallery() {
       reader.onload = (e) => {
         const div = document.createElement("div");
         div.classList.add("preview__item");
-        div.innerHTML = `<img src="${e.target.result}" style="width: 10rem; height: 10rem; object-fit: cover;">
+        div.innerHTML = `<img src="${e.target.result}">
         <button type="button" class="btn-remove" data-index="${index}">❌</button>`;
         container.appendChild(div);
       };

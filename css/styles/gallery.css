@@ -16,16 +16,16 @@ h1 {
 .gallery-panel {
   border: 2px solid rebeccapurple;
   padding: 1rem;
+  margin: 1rem auto;
 }
 
 .controls {
   display: flex;
-  margin: 0 auto;
+  margin: 1rem auto;
   padding: 1rem;
   gap: 1rem;
   border: 2px solid #1a73e8;
 }
-
 
 .btn, .btn__upload, .btn__delete {
   background-color: #999;
@@ -57,21 +57,57 @@ h1 {
 .btn__delete:hover {
   background-color: #dc3545;
   opacity: .9;
-}  
+}
+
+.button-container {
+  border: 2px solid yellow;
+  padding: 1rem;
+}
 
 .preview-grid {
   display: grid;
-  grid-template-columns: repeat(8, 1fr);  
-  min-height: auto;  
-  overflow: anchor-selection;  
+  grid-template-columns: repeat(5, 1fr);
+  grid-auto-rows: 1fr;
+  height: auto;
+  padding: 1rem;
+  margin: 1rem auto;
+  gap: 2rem;
+  border: 2px solid green;
 }   
+
+.preview__item {
+  border: 2px solid #fff;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.preview__item img {
+  border: 2px solid saddlebrown;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.btn-remove {
+  position: absolute;
+  top: 3%;
+  right: 0;
+  background-color: transparent;
+  outline: none;
+  border: none;
+}
 
 .dropzone {
   border: 3px solid #1f0;
+  margin: 1rem auto;
+  padding: 1rem;
+  text-align: center;
 }  
 
 .grid__gallery-container {
   border: 3px solid orange;
+  margin: 1rem auto;
   padding: 1rem;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -106,7 +142,7 @@ h1 {
   padding: 1rem;
   width: 100%;
   height: 100%;
-  margin: auto;
+  margin: 0 auto;
   user-select: none;
   -webkit-user-drag: none;
 }  
