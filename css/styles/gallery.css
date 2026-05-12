@@ -12,16 +12,62 @@ h1 {
   padding: 1rem;
 }
 
-/*.preview-grid {
-    display: block; /* Cambiamos temporalmente a block para que no flote 
-    min-height: 500px; /* Dale una altura exagerada para probar 
-    overflow: anchor-selection; /* Intenta mantener el foco 
-  } 
-*/
+
+.gallery-panel {
+  border: 2px solid rebeccapurple;
+  padding: 1rem;
+}
+
+.controls {
+  border: 2px solid #1a73e8;
+  padding: 1rem;
+}
+
+.btn {
+  background-color: #aaa;
+  color: #000;
+  padding: 1rem;
+  border: none;
+  outline: none;
+  border-bottom: 3px solid #000;
+  border-radius: .5rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: auto;
+  height: auto;
+  transition: all .1s ease;
+}
+
+.btn:hover {
+  box-shadow: 3px 3px 3px #ddd;
+  background-color: #222;
+  color: #fff;
+}
+
+.preview-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);  
+  min-height: auto;  
+  overflow: anchor-selection;  
+} 
+
+.dropzone {
+  border: 3px solid #1f0;
+}
+
+.grid__gallery-container {
+  border: 3px solid orange;
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  height: auto;
+  gap: 2rem;
+}
 
 .selection-marquee {
   position: fixed;
   border: 2px solid #1a73e8;
+  outline: 2px solid #1a73e8;
   background-color: rgba(26, 115, 232, .25);
   z-index: 10000;
   pointer-events: none;
@@ -41,11 +87,12 @@ h1 {
 }
 
 .gallery__item img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: auto;
   user-select: none;
   -webkit-user-drag: none;
-  display: block;
-  width: 30%;
-  height: auto;
 }
 
 .gallery__item.selected img {
