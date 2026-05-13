@@ -9,7 +9,7 @@ export const initFirestore = async () => {
     carousel: [
       {
         id: 1,
-        url: "https://res.cloudinary.com/djtomsyj8/image/upload/f_webp/v1774990714/24_bvmpvy.jpg",
+        url: "https://res.cloudnary.com/djtomsyj8/image/upload/f_webp/v1774990714/24_bvmpvy.jpg",
         name: "Foto 1",
       },
       {
