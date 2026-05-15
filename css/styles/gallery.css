@@ -68,6 +68,13 @@ h1 {
   opacity: .9;
 }
 
+button:disabled {
+  background-color: #ccc !important;
+  color: #666 !important;
+  cursor: not-allowed !important;
+  opacity: 0.6;
+}
+
 .preview-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -179,3 +186,4 @@ h1 {
 .gallery__item.selected img {
   filter: brightness(.7);
 }  
+
