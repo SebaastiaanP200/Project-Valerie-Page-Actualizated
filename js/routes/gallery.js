@@ -97,11 +97,18 @@ export async function initGallery() {
         e.stopPropagation();
         const pid = div.dataset.pid;
         
-        div.classList.toggle("selected");
-        if (selectedImages.has(pid)) {
-          div.classList.remove("selected");
-          selectedImages.delete(pid);
+        if (e.ctrlKey) {
+        const isSelected = div.classList.toggle("selected");
+          if (isSelected) {
+            selectedImages.add(pid);
+          } else {
+            selectedImages.delete(pid);
+          }
         } else {
+          document.querySelectorAll(".gallery__item").forEach(item => {
+            if(item !== div) item.classList.remove("selected");
+          });
+          selectedImages.clear();
           div.classList.add("selected");
           selectedImages.add(pid);
         }
@@ -118,12 +125,17 @@ export async function initGallery() {
     marquee.classList.add("selection-marquee");
 
     gridGallery.addEventListener("mousedown", (e) => {
-      // if (e.target !== gridGallery) return;
-      if (e.target.tagName === "IMG") e.preventDefault();
+      // if (e.target !== gridGallery);
+      if (e.target.tagName === "IMG") { 
+        e.preventDefault();
+        return;
+      }
 
       isSelecting = true;
-      selectedImages.clear();
-      document.querySelectorAll(".gallery__item").forEach(item => item.classList.remove("selected"));
+      if (!e.ctrlKey) {
+        selectedImages.clear();
+        document.querySelectorAll(".gallery__item").forEach(item => item.classList.remove("selected"));
+      }
       
       allItems = Array.from(document.querySelectorAll(".gallery__item"));
       
@@ -136,6 +148,8 @@ export async function initGallery() {
       marquee.style.width = "0px";
       marquee.style.height = "0px";
       document.body.appendChild(marquee);
+
+      updateDeleteBtnVisibility();  
     });
 
     window.addEventListener("mousemove", (e) => {
@@ -161,27 +175,27 @@ export async function initGallery() {
       const marqueeRect = marquee.getBoundingClientRect();
 
       allItems.forEach(item => {
-          const itemRect = item.getBoundingClientRect();
-          const pid = item.dataset.pid;
+        const itemRect = item.getBoundingClientRect();
+        const pid = item.dataset.pid;
 
-          const isOverlapping = !(
-              marqueeRect.right < itemRect.left || 
-              marqueeRect.left > itemRect.right || 
-              marqueeRect.bottom < itemRect.top || 
-              marqueeRect.top > itemRect.bottom
-          );
+        const isOverlapping = !(
+          marqueeRect.right < itemRect.left || 
+          marqueeRect.left > itemRect.right || 
+          marqueeRect.bottom < itemRect.top || 
+          marqueeRect.top > itemRect.bottom
+        );
 
-          if (isOverlapping) {
-              item.classList.add("selected");
-              selectedImages.add(pid);
-          } else {
-              // Solo deseleccionamos lo que NO estaba marcado antes del arrastre
-              // si querés que el arrastre siempre "sume", sacá este else.
-              item.classList.remove("selected");
-              selectedImages.delete(pid);
-          }
-      });
-      updateDeleteBtnVisibility();
+        if (isOverlapping) {
+          item.classList.add("selected");
+          selectedImages.add(pid);
+        } else {
+          // Solo deseleccionamos lo que NO estaba marcado antes del arrastre
+          // si querés que el arrastre siempre "sume", sacá este else.
+          item.classList.remove("selected");
+          selectedImages.delete(pid);
+        }
+    });
+    updateDeleteBtnVisibility();
   });
 
 
@@ -189,6 +203,7 @@ export async function initGallery() {
     if (!isSelecting) return;
     isSelecting = false;
     if (marquee.parentNode) marquee.parentNode.removeChild(marquee);
+    updateDeleteBtnVisibility();
   });
 
   const deleteSelected = async (e) => {
