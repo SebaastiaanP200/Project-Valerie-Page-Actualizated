@@ -352,7 +352,8 @@ export async function initGallery() {
     deleteSelected();
   });
 
-  renderGallery();
+
+    renderGallery();
 }
 
 

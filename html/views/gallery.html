@@ -10,27 +10,28 @@
  
   <div class="container">
 
-    <div class="select-box">
+    <div class="control-box">
       <label for="sectionSelect">Sección:</label>
       <select id="sectionSelect" class="select__section">
         <option value="carousel">Carrusel</option>
         <option value="testimony">Testimonios</option>
         <option value="profile">Acerca de</option>
-        <option value="preview">Portadas</option>
-        <option value="nf">Portfolio: Niños</option>
-        <option value="xv">Portfolio: 15 Años</option>
-        <option value="wd">Portfolio: Bodas</option>
+        <option value="portfolio_preview">Portadas</option>
+        <option value="portfolio_nf">Portfolio: Niños</option>
+        <option value="portfolio_xv">Portfolio: 15 Años</option>
+        <option value="portfolio_wd">Portfolio: Bodas</option>
       </select>
     </div>
 
-
     <div id="preview-container" class="preview-grid"></div>
-    <div class="button-container">
-    <button id="btnConfirmUpload" class="btn__upload">Subir fotos</button>
-    <button class="btn__delete" id="deleteBtn">Eliminar</button>
-  </div>
-  </div>
     
+    <div class="button-container">
+      <button id="btnConfirmUpload" class="btn__upload">Subir fotos</button>
+      <button class="btn__delete" id="deleteBtn">Eliminar</button>
+    </div>
+  </div>
+  
+  <h2 id="gallery-title">Viendo:</h2>
   <div class="grid__gallery-container" id="grid-gallery" loading="lazy"></div>
   
 </section>
