@@ -11,6 +11,7 @@ export async function initGallery() {
   const dropzone = document.getElementById("dropzone");
   const container = document.getElementById("preview-container");
   const btnConfirm = document.getElementById("btnConfirmUpload");
+  const galleryPanel = document.getElementById("gallery-panel");
 
   let selectedImages = new Set();
   let currentSection = "nf";
@@ -204,6 +205,24 @@ export async function initGallery() {
     isSelecting = false;
     if (marquee.parentNode) marquee.parentNode.removeChild(marquee);
     updateDeleteBtnVisibility();
+  });
+
+  galleryPanel.addEventListener("mousedown", (e) => {
+    const clickPhoto = e.target.closest(".gallery__item");
+    const clickControls = e.target.closest(".container");
+    const clickPreview = e.target.closest(".dropzone");
+    const clickDropzone = e.target.closest(".preview-grid");
+    const clickButtons = e.target.closest(".button-container");
+
+    if (!clickPhoto && !clickControls && !clickPreview && !clickDropzone && !clickButtons) {
+      selectedImages.clear();
+
+      document.querySelectorAll(".gallery__item").forEach(item => {
+        item.classList.remove("selected");
+      });
+
+      updateDeleteBtnVisibility();
+    }
   });
 
   const deleteSelected = async (e) => {
